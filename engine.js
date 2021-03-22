@@ -12,7 +12,7 @@ const ixpdotp = 1440 / (2.0 * 3.141592654) ;
 let TargetDate = new Date();
 
 const defaultOptions = {
-    backgroundColor: 0x333340,
+    backgroundColor: 0x000000,
     defaultSatelliteColor: 0xff0000,
     onStationClicked: null
 }
@@ -98,22 +98,37 @@ export class Engine {
 
         sat.position.set(pos.x, pos.y, pos.z);
         station.mesh = sat;
+        
+
 
         this.stations.push(station);
-
         if (station.orbitMinutes > 0) this.addOrbit(station);
-
+        
+        // if ( (pos.x*-730943.78065676 -419966.81348175*pos.y +411408.06190467*pos.z +  6067517068.2521) < 0) {
+        // station.mesh.color.set(0x00FF00);
+        //     // sat.material.color.set(0x00FF00);
+        //     // sat.material.Color.set(0x00FF00);
+        //     this.earth.add(sat);
+        // }
         this.earth.add(sat);
+        // station.mesh.color.set(0x00FF00);
+        // else {
+        //     sat.material.color.set(0xFFFFFF);
+        //     this.earth.add(sat);
+        //  }
     }
 
     loadLteFileStations = (url, color, stationOptions) => {
         const options = { ...defaultStationOptions, ...stationOptions };
 
         return fetch(url).then(res => {
-            return res.text().then(text => {
-                return this._addTleFileStations(text, color, options);
-            });
+            if (res.ok) {
+                return res.text().then(text => {
+                    return this._addTleFileStations(text, color, options);
+                });
+            }
         });
+     
     }
 
     addOrbit = (station) => {
@@ -226,9 +241,15 @@ export class Engine {
         date = date || TargetDate;
 
         const pos = getPositionFromTle(station, date);
+        console.log(pos);
         if (!pos) return;
-
-        station.mesh.position.set(pos.x, pos.y, pos.z);
+        if ( (pos.x*-730943.78065676 -419966.81348175*pos.y +411408.06190467*pos.z +  6067517068.2521) < 0){
+            station.mesh.position.set(pos.x, pos.y, pos.z);
+        }else{
+            station.mesh.position.set(0,0,0);
+            // this.render();
+        }
+        // station.mesh.position.set(pos.x, pos.y, pos.z);
     }
 
     
@@ -236,6 +257,7 @@ export class Engine {
         if (!this.stations) return;
 
         this.stations.forEach(station => {
+        
             this.updateSatellitePosition(station, date);
         });
 
