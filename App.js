@@ -145,7 +145,7 @@ class App extends Component {
             <div>
                 <Fork />
                 <img src={require("/assets/logo.png")} className="logo" />
-                <Info stations={stations} />
+                <Info stations={stations} satCounter={this.engine?.satCounter} />
                 <Search stations={this.state.stations} onResultClick={this.handleSearchResultClick} />
                 <SelectedStations selected={selected} onRemoveStation={this.handleRemoveSelected} onRemoveAll={this.handleRemoveAllSelected} />
                 <div ref={c => this.el = c} style={{ width: '100%', height: '100%' }} />

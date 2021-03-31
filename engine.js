@@ -30,6 +30,7 @@ export class Engine {
         this.el = container;
         this.raycaster = new THREE.Raycaster();
         this.options = { ...defaultOptions, ...options };
+        this.satCounter = 0;
 
         this._setupScene();
         this._setupLights();
@@ -241,10 +242,11 @@ export class Engine {
         date = date || TargetDate;
 
         const pos = getPositionFromTle(station, date);
-        console.log(pos);
+
         if (!pos) return;
         if ( (pos.x*-730943.78065676 -419966.81348175*pos.y +411408.06190467*pos.z +  6067517068.2521) < 0){
             station.mesh.position.set(pos.x, pos.y, pos.z);
+            this.satCounter++;
         }else{
             station.mesh.position.set(0,0,0);
             // this.render();
@@ -256,6 +258,7 @@ export class Engine {
     updateAllPositions = (date) => {
         if (!this.stations) return;
 
+        this.satCounter = 0;
         this.stations.forEach(station => {
         
             this.updateSatellitePosition(station, date);
